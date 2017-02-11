@@ -11,6 +11,9 @@
 #include <string>
 using namespace std;
 
+/*
+ * Count the number of lines (numbers) in file
+ */
 int countLines(string path){
     int number_of_lines = 0;
     std::string line;
@@ -185,6 +188,18 @@ void quickSortPivotFirstRecuChosen(int arr[], int left, int right, int seuil) {
 }
 
 
+/*
+ * Read file into the array
+ */
+void readNumbers(int numbers[], int lines, string path){
+    std::string line;
+    std::ifstream myfile(path);
+    for (int i=0; i<lines; i++){
+        std::getline(myfile, line);
+        numbers[i] = std::stoi(line);
+    }
+    
+}
 
 
 int main(int argc, const char * argv[]) {
@@ -214,8 +229,11 @@ int main(int argc, const char * argv[]) {
             std::cout << "Error reading file. Path not found" << lines;
             return -1;
         }
-            
         
+        int numbers[lines];
+        readNumbers(numbers, lines, path);
+        
+        // TODO
         if(algo == "counting"){
             
         }
