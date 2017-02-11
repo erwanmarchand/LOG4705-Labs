@@ -8,29 +8,17 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 
-int main(int argc, const char * argv[]) {
+int countLines(string path){
+    int number_of_lines = 0;
+    std::string line;
+    std::ifstream myfile(path);
     
-    if(argc >= 3){
-        string algo = argv[1];
-        string path = argv[2];
-        bool print = false;
-        bool time = false;
-        
-        for(int i=3; i<argc; i++){
-            if(strncmp(argv[i], "-p", 2) == 0)
-                print = true;
-            else if(strncmp(argv[i], "-t", 2) == 0)
-                time = true;
-        }
-        
-        std::cout << "Algorithm: " << algo << std::endl;
-        std::cout << "File path: " << path << std::endl;
-        std::cout << "Print: " << print << std::endl;
-        std::cout << "Time: " << time << std::endl;
-    }
-    return 0;
+    while (std::getline(myfile, line))
+        ++number_of_lines;
+    return number_of_lines;
 }
 
 // FROM : http://www.algolist.net/Algorithms/Sorting/Quicksort
@@ -197,6 +185,56 @@ void quickSortPivotFirstRecuChosen(int arr[], int left, int right, int seuil) {
 }
 
 
+
+
+int main(int argc, const char * argv[]) {
+    
+    if(argc >= 3){
+        string algo = argv[1];
+        string path = argv[2];
+        bool print = false;
+        bool time = false;
+        
+        for(int i=3; i<argc; i++){
+            if(strncmp(argv[i], "-p", 2) == 0)
+                print = true;
+            else if(strncmp(argv[i], "-t", 2) == 0)
+                time = true;
+        }
+        
+        std::cout << "Algorithm: " << algo << std::endl;
+        std::cout << "File path: " << path << std::endl;
+        std::cout << "Print: " << print << std::endl;
+        std::cout << "Time: " << time << std::endl;
+        
+        
+        int lines = countLines(path);
+        
+        if(lines == 0){
+            std::cout << "Error reading file. Path not found" << lines;
+            return -1;
+        }
+            
+        
+        if(algo == "counting"){
+            
+        }
+        else if(algo == "quick"){
+            
+        }
+        else if(algo == "quickRandom"){
+            
+        }
+        else if(algo == "quickSeuil"){
+            
+        }
+        else if(algo == "quickRandomSeuil"){
+            
+        }
+        
+    }
+    return 0;
+}
 
 
 
