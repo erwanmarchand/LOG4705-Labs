@@ -25,4 +25,4 @@ esac
 shift
 done
 
-echo python3 ./src/$ALGO.py $EX_PATH $OPTIONS
+echo "$(./log4705 $ALGO $EX_PATH $OPTIONS)"

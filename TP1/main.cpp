@@ -7,10 +7,29 @@
 //
 
 #include <iostream>
+#include <fstream>
+using namespace std;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    if(argc >= 3){
+        string algo = argv[1];
+        string path = argv[2];
+        bool print = false;
+        bool time = false;
+        
+        for(int i=3; i<argc; i++){
+            if(strncmp(argv[i], "-p", 2) == 0)
+                print = true;
+            else if(strncmp(argv[i], "-t", 2) == 0)
+                time = true;
+        }
+        
+        std::cout << "Algorithm: " << algo << std::endl;
+        std::cout << "File path: " << path << std::endl;
+        std::cout << "Print: " << print << std::endl;
+        std::cout << "Time: " << time << std::endl;
+    }
     return 0;
 }
 
