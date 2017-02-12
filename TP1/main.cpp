@@ -9,7 +9,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <chrono>
+#include <random>
+#include <cstdlib>
+#include <ctime>
+
 using namespace std;
+using namespace std::chrono;
 
 /*
  * Count the number of lines (numbers) in file
@@ -57,8 +63,8 @@ void bubbleSort(int arr[], int left, int right) {
 void quickSortPivotRandomRecuOne(int arr[], int left, int right) {
     int i = left, j = right;
     int tmp;
-    int pivot = left + rand() % (right-left) ; // @ERWAN : Random value chosen, please verify that's ok
-    
+    int pivot = left + (std::rand()%(right-left)); // @ERWAN : Random value chosen, please verify that's ok
+    std::cout << "Pivot: " << std::rand()%(right-left) << std::endl;
     /* partition */
     while (i <= j) {
         while (arr[i] < pivot)
@@ -233,12 +239,18 @@ int main(int argc, const char * argv[]) {
         int numbers[lines];
         readNumbers(numbers, lines, path);
         
+        std::srand(std::time(0));
+        
+        // Start time counter
+        high_resolution_clock::time_point startTime = high_resolution_clock::now();
+        
         // TODO
         if(algo == "counting"){
-            
         }
         else if(algo == "quick"){
-            
+            std::cout << "In " << lines << std::endl;
+            quickSortPivotRandomRecuOne(numbers, 0, lines-1);
+            std::cout << "Out " << std::endl;
         }
         else if(algo == "quickRandom"){
             
@@ -249,7 +261,24 @@ int main(int argc, const char * argv[]) {
         else if(algo == "quickRandomSeuil"){
             
         }
+        else {
+            std::cout << "Error: wrong algorithm argument" << std::endl;
+        }
         
+        // End time counter
+        high_resolution_clock::time_point endTime = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>( endTime - startTime ).count();
+        
+        // Print execution time
+        if(time)
+            std::cout << "Duration: " << duration;
+        
+        // Print numbers
+        if(print){
+            for(int i=0; i<lines; i++){
+                std::cout << numbers[i] << std::endl;
+            }
+        }
     }
     return 0;
 }
