@@ -17,6 +17,40 @@
 using namespace std;
 using namespace std::chrono;
 
+// Fonction pour recuperer la valeur max d'une array
+int getMax(int arr[], int nbrElements){
+	int max = 0;
+	// on parcourt tous les elements en cherchant le max
+	for (int i = 0; i < nbrElements; i++){
+		if (arr[i]>max)
+			max = arr[i];
+	}
+	return max;
+}
+
+// Tri par denombrement
+void counting(int arr[], int nbrElements){
+	// on recupere la valeur max de notre array
+	int max = getMax(arr, nbrElements);
+	//on cree un vecteur de comptage
+	int* comptage = new int[max+1]; // on doit avoir max + 1 element en prenant en compte qu'on peut avoir des 0 dans notre array
+	//on initialise toutes ses valeurs a 0
+	for (int i = 0; i <= max; i++){
+		comptage[i] = 0;
+	}
+	//on incremente chaque valeur en fonction de son nombre d'apparition
+	for (int i = 0; i < nbrElements; i++){
+		comptage[arr[i]] += 1;
+	}
+	//on rentre les resultats dans notre array
+	int index = 0;
+	for (int i = 0; i <= max; i++){
+		for (int j = 0; j < comptage[i]; j++){
+			arr[index++] = i;
+		}
+	}
+}
+
 /*
  * Count the number of lines (numbers) in file
  */
