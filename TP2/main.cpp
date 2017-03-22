@@ -56,6 +56,43 @@ Node* returnNodeById(vector<Node*> nodes_vector, int id){
 	return NULL;
 }
 
+void removeNodeAndIncidentArcs(vector<Node*>& nodes, vector<Arc*>& arcs, Node* nodeToRemove){
+
+	//  remove all incident arcs from G;
+	std::vector<Arc*>::const_iterator itt = arcs.begin();
+	while (itt != arcs.end())
+	{
+		if ((*itt)->origin() == nodeToRemove || (*itt)->destination() == nodeToRemove)
+		{
+			itt = arcs.erase(itt);
+		}
+		else {
+			++itt;
+		}
+	}
+	// remove all vertices in c from G
+	if (std::find(nodes.begin(), nodes.end(), nodeToRemove) != nodes.end())
+	{
+		nodes.erase(std::find(nodes.begin(), nodes.end(), nodeToRemove));
+	}
+
+}
+
+bool nodeHasParent(vector<Arc*> arcs, Node* node){
+
+	std::vector<Arc*>::const_iterator itt = arcs.begin();
+	while (itt != arcs.end())
+	{
+		if ((*itt)->destination() == node)
+		{
+			return true;
+		}
+		++itt;
+	}
+	return false;
+
+}
+
 /* Algorithm 1: longestChain
 *  input : directed acyclic graph G(V; A)
 *  output : longest chain c in G*/
@@ -125,17 +162,7 @@ vector<vector<Node*>> voraceAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
 	while (c.size() > 0){
 		//  remove all vertices in c and incident arcs from G;
 		for (std::vector<Node*>::const_iterator it = c.begin(); it != c.end(); ++it){
-			//  remove all incident arcs from G;
-			for (std::vector<Arc*>::const_iterator itt = arcs.begin(); itt != arcs.end(); ++itt){
-				if ((*itt)->origin() == (*it) || (*itt)->destination() == (*it)){
-					arcs.erase(itt);
-				}
-			}
-			// remove all vertices in c from G
-			if (std::find(nodes.begin(), nodes.end(), (*it)) != nodes.end())
-			{
-				nodes.erase(std::find(nodes.begin(), nodes.end(), (*it)));
-			}
+			removeNodeAndIncidentArcs(nodes, arcs, (*it));
 		}
 		//  push c on L;
 		L.push_back(c);
@@ -150,6 +177,46 @@ vector<vector<Node*>> voraceAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
 		L.push_back(temp);
 	}
 	return L;
+}
+
+/*Algorithm 3: Algorithme de retour arrière
+*  input : directed acyclic graph G(V; A)
+*  output : number of permutation*/
+/*int dynamicAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
+	if (nodes.size() == 0)
+		return 1;
+	int result = 0;
+	vector<Node*> nodesTemp = nodes;
+	vector<Arc*> arcsTemp = arcs;
+	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
+		if (!nodeHasParent(arcs, (*it))){
+			removeNodeAndIncidentArcs(nodesTemp, arcsTemp, (*it));
+			result += dynamicAlgorithm(nodesTemp, arcsTemp);
+			nodesTemp = nodes;
+			arcsTemp = arcs;
+		}
+	}
+	return result;
+}*/
+
+/*Algorithm 4: Algorithme de programmation dynamique
+*  input : directed acyclic graph G(V; A)
+*  output : number of permutation*/
+int dynamicAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
+	if (nodes.size() == 0)
+		return 1;
+	int result = 0;
+	vector<Node*> nodesTemp = nodes;
+	vector<Arc*> arcsTemp = arcs;
+	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
+		if (!nodeHasParent(arcs, (*it))){
+			removeNodeAndIncidentArcs(nodesTemp, arcsTemp, (*it));
+			result += dynamicAlgorithm(nodesTemp, arcsTemp);
+			nodesTemp = nodes;
+			arcsTemp = arcs;
+		}
+	}
+	return result;
 }
 
 // Fonction pour lire un fichier
@@ -171,7 +238,15 @@ void readFile(string path, vector<Node*>& nodes_vector, vector<Arc*>& arcs_vecto
 		//cout << "numberOfNodes:" << token1 << "-numberOfArcs:" << token2 << '\n';
 		numberOfNodes = atoi(token1.c_str());
 
-		for (int i = 0; i < numberOfNodes; i++){
+		nodes_vector.push_back(new Node(0));
+		nodes_vector.push_back(new Node(1));
+		nodes_vector.push_back(new Node(2));
+		nodes_vector.push_back(new Node(3));
+		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, 1), returnNodeById(nodes_vector, 3)));
+		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector,2), returnNodeById(nodes_vector, 3)));
+		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, 2), returnNodeById(nodes_vector, 0)));
+
+		/*for (int i = 0; i < numberOfNodes; i++){
 			nodes_vector.push_back(new Node(i));
 		}
 
@@ -184,7 +259,7 @@ void readFile(string path, vector<Node*>& nodes_vector, vector<Arc*>& arcs_vecto
 			returnNodeById(nodes_vector, 1);
 			//cout << "token1:"<<token1<<"-token2:"<<token2<< '\n';
 			arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, atoi(token1.c_str())), returnNodeById(nodes_vector, atoi(token2.c_str()))));
-		}
+		}*/
 		myfile.close();
 	}
 
@@ -239,7 +314,8 @@ int main(int argc, const char * argv[]) {
 
 	readFile(chemin, nodes, arcs);
 
-	voraceAlgorithm(nodes, arcs);
+	vector<vector<Node*>> L = voraceAlgorithm(nodes, arcs);
+	int nbrPermut = dynamicAlgorithm(nodes, arcs);
 
 	finChargement = std::chrono::high_resolution_clock::now();
 
