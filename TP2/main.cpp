@@ -24,15 +24,19 @@ private:
 	int m_id;
 	int m_indegree;
 	int m_outdegree;
+	bool m_visited;
 public:
-	Node(int id){ m_id = id; m_indegree = 0; m_outdegree = 0; };
+	Node(int id){ m_id = id; m_indegree = 0; m_outdegree = 0; m_visited = false; };
 	void incrementeIndegree(){ m_indegree++; };
 	void incrementeOutdegree(){ m_outdegree++; };
+	void decrementeIndegree(){ m_indegree--; };
+	void decrementeOutdegree(){ m_outdegree--; };
 	int indegree(){ return m_indegree; };
 	int outdegree(){ return m_outdegree; };
 	void setid(int id){ m_id = id; };
 	int id() { return m_id; };
-
+	void setvisited(bool visited){ m_visited = visited; };
+	bool getVisited(){ return m_visited; };
 };
 
 class Arc {
@@ -179,25 +183,58 @@ vector<vector<Node*>> voraceAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
 	return L;
 }
 
+
+
+
 /*Algorithm 3: Algorithme de retour arrière
 *  input : directed acyclic graph G(V; A)
 *  output : number of permutation*/
-/*int dynamicAlgorithm(vector<Node*> nodes, vector<Arc*> arcs){
-	if (nodes.size() == 0)
-		return 1;
-	int result = 0;
-	vector<Node*> nodesTemp = nodes;
-	vector<Arc*> arcsTemp = arcs;
+void retourArriereReccu(vector<Node*> nodes, vector<Arc*> arcs, int& result){
+	bool flag = false;
+
 	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
-		if (!nodeHasParent(arcs, (*it))){
-			removeNodeAndIncidentArcs(nodesTemp, arcsTemp, (*it));
-			result += dynamicAlgorithm(nodesTemp, arcsTemp);
-			nodesTemp = nodes;
-			arcsTemp = arcs;
+	
+		if ((*it)->indegree() == 0 && !(*it)->getVisited())
+		{
+
+			for (std::vector<Arc*>::const_iterator itt = arcs.begin(); itt != arcs.end(); ++itt){
+				if ((*itt)->origin() == (*it)){
+					(*itt)->destination()->decrementeIndegree();
+				}
+			}
+
+
+			(*it)->setvisited(true);
+			retourArriereReccu(nodes, arcs, result);
+			(*it)->setvisited(false);
+
+
+			for (std::vector<Arc*>::const_iterator itt = arcs.begin(); itt != arcs.end(); ++itt){
+				if ((*itt)->origin() == (*it)){
+					(*itt)->destination()->incrementeIndegree();
+				}
+			}
+			flag = true;
 		}
 	}
+
+	if (!flag)
+	{
+		result++;
+	}
+}
+
+
+int retourArriere(vector<Node*> nodes, vector<Arc*> arcs){
+
+	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
+		(*it)->setvisited(false);
+	}
+	int result=0;
+	retourArriereReccu(nodes, arcs, result);
 	return result;
-}*/
+}
+
 
 /*Algorithm 4: Algorithme de programmation dynamique
 *  input : directed acyclic graph G(V; A)
@@ -315,7 +352,8 @@ int main(int argc, const char * argv[]) {
 	readFile(chemin, nodes, arcs);
 
 	vector<vector<Node*>> L = voraceAlgorithm(nodes, arcs);
-	int nbrPermut = dynamicAlgorithm(nodes, arcs);
+	int nbrPermutDyn = dynamicAlgorithm(nodes, arcs);
+	int nbrPermutRetArr = retourArriere(nodes, arcs);
 
 	finChargement = std::chrono::high_resolution_clock::now();
 
@@ -325,18 +363,21 @@ int main(int argc, const char * argv[]) {
 
 	case algoVorace:
 		departTri = std::chrono::high_resolution_clock::now();
+		// Executer 
 		finTri = std::chrono::high_resolution_clock::now();
 		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
 		break;
 
 	case algoDynamique:
 		departTri = std::chrono::high_resolution_clock::now();
+		// Executer 
 		finTri = std::chrono::high_resolution_clock::now();
 		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
 		break;
 
 	case algoRetourArriere:
 		departTri = std::chrono::high_resolution_clock::now();
+		// Executer 
 		finTri = std::chrono::high_resolution_clock::now();
 		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
 		break;
