@@ -238,15 +238,15 @@ void readFile(string path, vector<Node*>& nodes_vector, vector<Arc*>& arcs_vecto
 		//cout << "numberOfNodes:" << token1 << "-numberOfArcs:" << token2 << '\n';
 		numberOfNodes = atoi(token1.c_str());
 
-		nodes_vector.push_back(new Node(0));
+		/*nodes_vector.push_back(new Node(0));
 		nodes_vector.push_back(new Node(1));
 		nodes_vector.push_back(new Node(2));
 		nodes_vector.push_back(new Node(3));
 		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, 1), returnNodeById(nodes_vector, 3)));
 		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector,2), returnNodeById(nodes_vector, 3)));
-		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, 2), returnNodeById(nodes_vector, 0)));
+		arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, 2), returnNodeById(nodes_vector, 0)));*/
 
-		/*for (int i = 0; i < numberOfNodes; i++){
+		for (int i = 0; i < numberOfNodes; i++){
 			nodes_vector.push_back(new Node(i));
 		}
 
@@ -259,7 +259,7 @@ void readFile(string path, vector<Node*>& nodes_vector, vector<Arc*>& arcs_vecto
 			returnNodeById(nodes_vector, 1);
 			//cout << "token1:"<<token1<<"-token2:"<<token2<< '\n';
 			arcs_vector.push_back(new Arc(returnNodeById(nodes_vector, atoi(token1.c_str())), returnNodeById(nodes_vector, atoi(token2.c_str()))));
-		}*/
+		}
 		myfile.close();
 	}
 
