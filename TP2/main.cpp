@@ -22,17 +22,14 @@ static enum Algorithmes {
 class Node {
 private:
 	int m_id;
-	int m_indegree;
-	int m_outdegree;
 	bool m_visited;
+	int m_indegree;
+	
 public:
-	Node(int id){ m_id = id; m_indegree = 0; m_outdegree = 0; m_visited = false; };
+	Node(int id){ m_id = id; m_indegree = 0; m_visited = false; };
 	void incrementeIndegree(){ m_indegree++; };
-	void incrementeOutdegree(){ m_outdegree++; };
 	void decrementeIndegree(){ m_indegree--; };
-	void decrementeOutdegree(){ m_outdegree--; };
 	int indegree(){ return m_indegree; };
-	int outdegree(){ return m_outdegree; };
 	void setid(int id){ m_id = id; };
 	int id() { return m_id; };
 	void setvisited(bool visited){ m_visited = visited; };
@@ -45,8 +42,8 @@ private:
 	Node* m_destination;
 public:
 	Arc(){};
-	Arc(Node* origin, Node* destination){ m_origin = origin; m_destination = destination; origin->incrementeOutdegree(); destination->incrementeIndegree(); };
-	void setorigin(Node* origin){ m_origin = origin; origin->incrementeOutdegree(); };
+	Arc(Node* origin, Node* destination){ m_origin = origin; m_destination = destination; destination->incrementeIndegree(); };
+	void setorigin(Node* origin){ m_origin = origin;};
 	Node* origin() { return m_origin; };
 	void setdestination(Node* destination){ m_destination = destination;  destination->incrementeIndegree(); };
 	Node* destination() { return m_destination; };
@@ -193,7 +190,7 @@ void retourArriereReccu(vector<Node*> nodes, vector<Arc*> arcs, int& result){
 	bool flag = false;
 
 	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
-	
+
 		if ((*it)->indegree() == 0 && !(*it)->getVisited())
 		{
 
@@ -221,6 +218,7 @@ void retourArriereReccu(vector<Node*> nodes, vector<Arc*> arcs, int& result){
 	if (!flag)
 	{
 		result++;
+		//cout << result << endl;
 	}
 }
 
@@ -230,7 +228,7 @@ int retourArriere(vector<Node*> nodes, vector<Arc*> arcs){
 	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
 		(*it)->setvisited(false);
 	}
-	int result=0;
+	int result = 0;
 	retourArriereReccu(nodes, arcs, result);
 	return result;
 }
@@ -317,97 +315,101 @@ int main(int argc, const char * argv[]) {
 	mapAlgo["dynamique"] = algoDynamique;
 	mapAlgo["retourArriere"] = algoRetourArriere;
 
+
 	/*if (argc >= 3){
+
 
 		string choixAlgorithme = argv[1];
 		string chemin = argv[2];
 		bool afficherNbExtensions = false;
-		bool afficherTemps = false;*/
+		bool afficherTemps = false; */
 
-	//DEBUG
-	string choixAlgorithme = "vorace";
-	string chemin = "C:\\Users\\erwan\\Desktop\\boulot\\session_8\\INF4705\\TPs\\TP2\\poset10\\poset10-4a";
-	bool afficherNbExtensions = false;
-	bool afficherTemps = false;
-	//FIN DEBUG
+			//DEBUG
+			string choixAlgorithme = "dynamique";
+			string chemin = "C:\\Users\\erwan\\Desktop\\boulot\\session_8\\INF4705\\TPs\\TP2\\poset26\\poset26-4e";
+			bool afficherNbExtensions = false;
+			bool afficherTemps = false;
+			//FIN DEBUG
 
-	for (int i = 3; i < argc; i++){
-		if (strncmp(argv[i], "-p", 2) == 0)
-			afficherNbExtensions = true;
-		else if (strncmp(argv[i], "-t", 2) == 0)
-			afficherTemps = true;
-	}
-
-
-	/*cout << "Algorithme : " << choixAlgorithme << endl;
-	cout << "Chemin vers serie : " << chemin << endl;
-	cout << "Afficher Resultat trie : " << afficherArray << endl;
-	cout << "Afficher temps : " << afficherTemps << endl;
-	cout << "Le fichier possede : " << nombredElements << " nombres" << endl;*/
-
-	departChargement = std::chrono::high_resolution_clock::now();
-
-	long dureeExecution = 0;
-
-	readFile(chemin, nodes, arcs);
-
-	vector<vector<Node*>> L = voraceAlgorithm(nodes, arcs);
-	int nbrPermutDyn = dynamicAlgorithm(nodes, arcs);
-	int nbrPermutRetArr = retourArriere(nodes, arcs);
-
-	finChargement = std::chrono::high_resolution_clock::now();
+			for (int i = 3; i < argc; i++){
+			if (strncmp(argv[i], "-p", 2) == 0)
+				afficherNbExtensions = true;
+			else if (strncmp(argv[i], "-t", 2) == 0)
+				afficherTemps = true;
+			}
 
 
+		/*cout << "Algorithme : " << choixAlgorithme << endl;
+		cout << "Chemin vers serie : " << chemin << endl;
+		cout << "Afficher Resultat trie : " << afficherArray << endl;
+		cout << "Afficher temps : " << afficherTemps << endl;
+		cout << "Le fichier possede : " << nombredElements << " nombres" << endl;*/
 
-	switch (mapAlgo[choixAlgorithme]) {
+		departChargement = std::chrono::high_resolution_clock::now();
 
-	case algoVorace:
-		departTri = std::chrono::high_resolution_clock::now();
-		// Executer 
-		finTri = std::chrono::high_resolution_clock::now();
-		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
-		break;
+		unsigned long long dureeExecution = 0;
 
-	case algoDynamique:
-		departTri = std::chrono::high_resolution_clock::now();
-		// Executer 
-		finTri = std::chrono::high_resolution_clock::now();
-		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
-		break;
+		readFile(chemin, nodes, arcs);
+		
+		vector<vector<Node*>> L;
+		int nbrPermut = 0;
 
-	case algoRetourArriere:
-		departTri = std::chrono::high_resolution_clock::now();
-		// Executer 
-		finTri = std::chrono::high_resolution_clock::now();
-		dureeExecution += std::chrono::duration_cast<std::chrono::nanoseconds>(finTri - departTri).count();
-		break;
+		finChargement = std::chrono::high_resolution_clock::now();
+
+		switch (mapAlgo[choixAlgorithme]) {
+
+		case algoVorace:
+			departTri = std::chrono::high_resolution_clock::now();
+			L = voraceAlgorithm(nodes, arcs);
+			finTri = std::chrono::high_resolution_clock::now();
+			dureeExecution += std::chrono::duration_cast<std::chrono::milliseconds>(finTri - departTri).count();
+			break;
+
+		case algoDynamique:
+			departTri = std::chrono::high_resolution_clock::now();
+			nbrPermut = dynamicAlgorithm(nodes, arcs);
+			finTri = std::chrono::high_resolution_clock::now();
+			dureeExecution += std::chrono::duration_cast<std::chrono::milliseconds>(finTri - departTri).count();
+			break;
+
+		case algoRetourArriere:
+			departTri = std::chrono::high_resolution_clock::now();
+			nbrPermut = retourArriere(nodes, arcs);
+			finTri = std::chrono::high_resolution_clock::now();
+			dureeExecution += std::chrono::duration_cast<std::chrono::milliseconds>(finTri - departTri).count();
+			break;
 
 
-	default:
-		cout << "Algorithme incorrect" << endl;
-		break;
-	}
+		default:
+			cout << "Algorithme incorrect" << endl;
+			break;
+		}
 
-	long dureeChargement = std::chrono::duration_cast<std::chrono::microseconds>(finChargement - departChargement).count();
-
-
+		long dureeChargement = std::chrono::duration_cast<std::chrono::milliseconds>(finChargement - departChargement).count();
 
 
-	// Afficher le temps d'execution
-	if (afficherTemps){
-		/*cout << "Temps pour chargement : " << dureeChargement <<"micros"<< endl;
-		cout << "Temps pour tri : " << dureeExecution << "nanos" << endl<<endl;*/
-		cout << dureeExecution;
-	}
+		for (std::vector<Arc*>::const_iterator it = arcs.begin(); it != arcs.end(); ++it){
+			delete(*it);
+		}
 
-	// Afficher le resultat supposement trie
-	if (afficherNbExtensions){
-		cout << dureeExecution;
-	}
+		for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); ++it){
+			delete(*it);
+		}
+
+		// Afficher le temps d'execution
+		if (afficherTemps){
+			/*cout << "Temps pour chargement : " << dureeChargement <<"micros"<< endl;
+			cout << "Temps pour tri : " << dureeExecution << "nanos" << endl<<endl;*/
+			cout << dureeExecution<<endl;
+		}
+
+		// Afficher le resultat supposement trie
+		if (afficherNbExtensions){
+			cout << nbrPermut << endl;
+		}
 
 
 	//}
-
-	getchar();
+	
 	return 0;
 }
