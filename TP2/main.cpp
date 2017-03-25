@@ -24,12 +24,16 @@ private:
 	int m_id;
 	bool m_visited;
 	int m_indegree;
+	int m_outdegree;
 	
 public:
-	Node(int id){ m_id = id; m_indegree = 0; m_visited = false; };
+	Node(int id){ m_id = id; m_indegree = 0; m_outdegree = 0; m_visited = false; };
 	void incrementeIndegree(){ m_indegree++; };
+	void incrementeOutdegree(){ m_outdegree++; };
 	void decrementeIndegree(){ m_indegree--; };
+	void decrementeOutdegree(){ m_outdegree--; };
 	int indegree(){ return m_indegree; };
+	int outdegree(){ return m_outdegree; };
 	void setid(int id){ m_id = id; };
 	int id() { return m_id; };
 	void setvisited(bool visited){ m_visited = visited; };
@@ -42,8 +46,8 @@ private:
 	Node* m_destination;
 public:
 	Arc(){};
-	Arc(Node* origin, Node* destination){ m_origin = origin; m_destination = destination; destination->incrementeIndegree(); };
-	void setorigin(Node* origin){ m_origin = origin;};
+	Arc(Node* origin, Node* destination){ m_origin = origin; m_destination = destination; origin->incrementeOutdegree(); destination->incrementeIndegree(); };
+	void setorigin(Node* origin){ m_origin = origin; origin->incrementeOutdegree(); };
 	Node* origin() { return m_origin; };
 	void setdestination(Node* destination){ m_destination = destination;  destination->incrementeIndegree(); };
 	Node* destination() { return m_destination; };
@@ -218,7 +222,7 @@ void retourArriereReccu(vector<Node*> nodes, vector<Arc*> arcs, int& result){
 	if (!flag)
 	{
 		result++;
-		//cout << result << endl;
+		cout << result << endl;
 	}
 }
 
@@ -325,8 +329,8 @@ int main(int argc, const char * argv[]) {
 		bool afficherTemps = false; */
 
 			//DEBUG
-			string choixAlgorithme = "dynamique";
-			string chemin = "C:\\Users\\erwan\\Desktop\\boulot\\session_8\\INF4705\\TPs\\TP2\\poset26\\poset26-4e";
+			string choixAlgorithme = "retourArriere";
+			string chemin = "C:\\Users\\erwan\\Desktop\\boulot\\session_8\\INF4705\\TPs\\TP2\\poset14\\poset14-6j";
 			bool afficherNbExtensions = false;
 			bool afficherTemps = false;
 			//FIN DEBUG
