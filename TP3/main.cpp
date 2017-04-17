@@ -1,116 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <chrono>
-#include <random>
-#include <cstdlib>
-#include <ctime>
-#include <map>
-#include <deque>
-#include <limits>
-
-using namespace std;
-using namespace std::chrono;
-
-// Liste des differents algo
-enum TypesDePointsDinterets {
-	pointDeVue,
-	entree,
-	etape
-};
-
-class pointDInteret {
-private:
-	int m_id;
-	TypesDePointsDinterets m_type;
-	int m_nbrMaxSentier;
-	int m_nbrSentier;
-	map<pointDInteret*, double> m_couts;
-
-public:
-	pointDInteret(int id){ m_id = id; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>(); };
-	pointDInteret(int id, int type){
-		m_id = id; m_nbrMaxSentier = 0; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
-		if (type == 1){
-			m_type = pointDeVue;
-		}
-		else if (type == 2){
-			m_type = entree;
-		}
-		else if (type == 3){
-			m_type = etape;
-		}
-	};
-	pointDInteret(int id, int type, int nbrMaxSentier){
-		m_id = id; m_nbrMaxSentier = nbrMaxSentier; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
-		if (type == 1){
-			m_type = pointDeVue;
-		}
-		else if (type == 2){
-			m_type = entree;
-		}
-		else if (type == 3){
-			m_type = etape;
-		}
-	};
-	pointDInteret(int id, TypesDePointsDinterets type){ m_id = id; m_type = type; m_nbrMaxSentier = 0; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>(); };
-	void incrementeNbrSentier(){ m_nbrSentier++; };
-	void decrementeNbrSentier(){ m_nbrSentier--; };
-	int getId(){
-		return m_id;
-	};
-	void setId(int id){
-		m_id = id;
-	};
-	TypesDePointsDinterets getType(){
-		return m_type;
-	};
-	void setType(TypesDePointsDinterets type){
-		m_type = type;
-	};
-	int getnbrMaxSentier(){ return m_nbrMaxSentier; };
-	void setnbrMaxSentier(int nbrMaxSentier){ m_nbrMaxSentier = nbrMaxSentier; };
-	int getnbrSentier(){ return m_nbrSentier; };
-	void setnbrSentier(int nbrSentier){ m_nbrSentier = nbrSentier; };
-
-	map<pointDInteret*, double> getCouts(){
-		return m_couts;
-	};
-
-	void addCout(pointDInteret* pi, double cout){
-		m_couts[pi] = cout;
-	};
-
-};
-
-class sentier{
-private :
-	pointDInteret* m_origin;
-	pointDInteret* m_destination;
-	double m_cout;
-
-public :
-	sentier(pointDInteret* origin, pointDInteret* destination){ m_origin = origin; m_destination = destination; m_cout = origin->getCouts()[destination]; };
-	pointDInteret* origin() { return m_origin; };
-	//void setorigin(pointDInteret* origin) { m_origin=origin; };
-	pointDInteret* destination() { return m_destination; };
-	//void setdestination(pointDInteret* destination) { m_destination = destination; };
-};
-
-class parc{
-private:
-	vector<pointDInteret*> m_listePI;
-	vector<sentier*> m_listeSentiers;
-
-public:
-	parc(){ m_listePI = vector<pointDInteret*>(); };
-	parc(vector<pointDInteret*> listPI){ m_listePI = listPI; };
-	~parc(){ m_listeSentiers.clear(); };
-	void addPointDinteret(pointDInteret* pi){ m_listePI.push_back(pi); };
-	void addSentier(sentier* sentier){ m_listeSentiers.push_back(sentier); };
-	void addSentier(pointDInteret* origin, pointDInteret* destination){ m_listeSentiers.push_back(new sentier(origin, destination)); };
-};
-
+#include "parc.h"
 
 // Fonction pour lire un fichier
 void readFile(string path, vector<pointDInteret*>& listPI){
@@ -211,6 +99,14 @@ int main(int argc, const char * argv[]) {
 	parc* Parc = new parc(listPI);
 
 	Parc->addSentier(listPI[0], listPI[1]);
+	Parc->addSentier(listPI[1], listPI[2]);
+	Parc->addSentier(listPI[2], listPI[3]);
+	Parc->addSentier(listPI[3], listPI[9]);
+	Parc->addSentier(listPI[0], listPI[4]);
+	Parc->addSentier(listPI[4], listPI[5]);
+	Parc->addSentier(listPI[5], listPI[6]);
+	Parc->addSentier(listPI[6], listPI[7]);
+	Parc->addSentier(listPI[6], listPI[8]);
 
 	finChargement = std::chrono::high_resolution_clock::now();
 
