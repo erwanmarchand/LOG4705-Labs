@@ -13,6 +13,7 @@
 using namespace std;
 using namespace std::chrono;
 
+
 // Liste des differents algo
 enum TypesDePointsDinterets {
 	pointDeVue,
@@ -22,12 +23,23 @@ enum TypesDePointsDinterets {
 
 class pointDInteret {
 private:
+
+	struct compareId
+	{
+		bool operator()(pointDInteret *a, pointDInteret *b) const
+		{
+			// implement your comparison logic here
+			return (a->getId()<b->getId());
+		}
+	};
+
 	int m_id;
 	TypesDePointsDinterets m_type;
 	int m_nbrMaxSentier;
 	int m_nbrSentier;
-	map<pointDInteret*, double> m_couts;
+	map<pointDInteret*, double, compareId> m_couts;
 	bool m_connectedToEnter;
+
 
 public:
 	pointDInteret(int id);
@@ -45,7 +57,7 @@ public:
 	int getnbrSentier();
 	void setnbrSentier(int nbrSentier);
 
-	map<pointDInteret*, double> getCouts();
+	map<pointDInteret*, double, compareId> getCouts();
 
 	void addCout(pointDInteret* pi, double cout);
 

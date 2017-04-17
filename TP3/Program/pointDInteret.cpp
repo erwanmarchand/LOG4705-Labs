@@ -3,12 +3,12 @@
 pointDInteret::pointDInteret(int id){ 
 	m_id = id; 
 	m_nbrSentier = 0; 
-	m_couts = map<pointDInteret*, double>(); 
+	m_couts = map<pointDInteret*, double, compareId>();
 	m_connectedToEnter = false;
 }
 
 pointDInteret::pointDInteret(int id, int type){
-	m_id = id; m_nbrMaxSentier = 0; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
+	m_id = id; m_nbrMaxSentier = 0; m_nbrSentier = 0; m_couts = map<pointDInteret*, double, compareId>();
 	if (type == 1){
 		m_type = pointDeVue;
 		m_connectedToEnter = false;
@@ -24,7 +24,7 @@ pointDInteret::pointDInteret(int id, int type){
 };
 
 pointDInteret::pointDInteret(int id, int type, int nbrMaxSentier){
-	m_id = id; m_nbrMaxSentier = nbrMaxSentier; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
+	m_id = id; m_nbrMaxSentier = nbrMaxSentier; m_nbrSentier = 0; m_couts = map<pointDInteret*, double, compareId>();
 	if (type == 1){
 		m_type = pointDeVue;
 		m_connectedToEnter = false;
@@ -44,7 +44,7 @@ pointDInteret::pointDInteret(int id, TypesDePointsDinterets type){
 	m_type = type; 
 	m_nbrMaxSentier = 0; 
 	m_nbrSentier = 0; 
-	m_couts = map<pointDInteret*, double>(); 
+	m_couts = map<pointDInteret*, double, compareId>();
 	if (type == pointDeVue){
 		m_connectedToEnter = false;
 	}
@@ -83,7 +83,7 @@ int pointDInteret::getnbrSentier(){ return m_nbrSentier; };
 
 void pointDInteret::setnbrSentier(int nbrSentier){ m_nbrSentier = nbrSentier; };
 
-map<pointDInteret*, double> pointDInteret::getCouts(){
+map<pointDInteret*, double, pointDInteret::compareId> pointDInteret::getCouts(){
 	return m_couts;
 };
 
