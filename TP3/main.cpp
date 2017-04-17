@@ -83,14 +83,32 @@ public:
 
 };
 
+class sentier{
+private :
+	pointDInteret* m_origin;
+	pointDInteret* m_destination;
+	double m_cout;
+
+public :
+	sentier(pointDInteret* origin, pointDInteret* destination){ m_origin = origin; m_destination = destination; m_cout = origin->getCouts()[destination]; };
+	pointDInteret* origin() { return m_origin; };
+	//void setorigin(pointDInteret* origin) { m_origin=origin; };
+	pointDInteret* destination() { return m_destination; };
+	//void setdestination(pointDInteret* destination) { m_destination = destination; };
+};
+
 class parc{
 private:
 	vector<pointDInteret*> m_listePI;
+	vector<sentier*> m_listeSentiers;
 
 public:
 	parc(){ m_listePI = vector<pointDInteret*>(); };
 	parc(vector<pointDInteret*> listPI){ m_listePI = listPI; };
+	~parc(){ m_listeSentiers.clear(); };
 	void addPointDinteret(pointDInteret* pi){ m_listePI.push_back(pi); };
+	void addSentier(sentier* sentier){ m_listeSentiers.push_back(sentier); };
+	void addSentier(pointDInteret* origin, pointDInteret* destination){ m_listeSentiers.push_back(new sentier(origin, destination)); };
 };
 
 
@@ -151,7 +169,6 @@ void readFile(string path, vector<pointDInteret*>& listPI){
 
 int main(int argc, const char * argv[]) {
 
-	parc Parc;
 	vector<pointDInteret*> listPI;
 
 	std::chrono::time_point<std::chrono::system_clock> departChargement, departTri, finChargement, finTri;
@@ -191,7 +208,9 @@ int main(int argc, const char * argv[]) {
 
 	readFile(chemin, listPI);
 
+	parc* Parc = new parc(listPI);
 
+	Parc->addSentier(listPI[0], listPI[1]);
 
 	finChargement = std::chrono::high_resolution_clock::now();
 
