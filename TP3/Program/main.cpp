@@ -108,6 +108,10 @@ int main(int argc, const char * argv[]) {
 	Parc->addSentier(listPI[6], listPI[7]);
 	Parc->addSentier(listPI[6], listPI[8]);
 
+	Parc->executeAllVerifications();
+
+	delete(Parc);
+
 	finChargement = std::chrono::high_resolution_clock::now();
 
 

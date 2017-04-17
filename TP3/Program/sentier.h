@@ -10,6 +10,7 @@ private:
 
 public:
 	sentier(pointDInteret* origin, pointDInteret* destination);
+	~sentier();
 	pointDInteret* origin();
 	//void setorigin(pointDInteret* origin) { m_origin=origin; };
 	pointDInteret* destination();

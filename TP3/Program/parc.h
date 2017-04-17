@@ -26,5 +26,7 @@ public:
 	bool verifContrainte4();
 	//5. Chaque point d’intérêt possède un nombre limité de sentiers incidents.
 	bool verifContrainte5();
+
+	void executeAllVerifications();
 };
 
