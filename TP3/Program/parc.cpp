@@ -6,10 +6,18 @@ parc::parc(){ m_listePI = vector<pointDInteret*>(); m_coutTotal = 0; };
 parc::parc(vector<pointDInteret*> listPI){ m_listePI = listPI;  m_coutTotal = 0; };
 
 parc::~parc(){ 
+
 	for (auto &sentier : m_listeSentiers) // access by reference to avoid copying
 	{
 		delete sentier;
 	}
+
+	for (auto &pi : m_listePI) // access by reference to avoid copying
+	{
+		if (pi->getType() != entree)
+			pi->setConnectedToEnter(false);
+	}
+
 };
 
 void parc::addPointDinteret(pointDInteret* pi){ m_listePI.push_back(pi); };
@@ -17,7 +25,26 @@ void parc::addSentier(sentier* sentier){ m_listeSentiers.push_back(sentier); m_c
 void parc::addSentier(pointDInteret* origin, pointDInteret* destination){ addSentier(new sentier(origin, destination)); };
 
 //1. Pour chaque point d’intérêt, il doit exister un chemin qui le relie à une entrée du parc.
-bool parc::verifContrainte1(){ return true; }
+bool parc::verifContrainte1(){ 
+	bool change = true;
+	while (change){
+		change = false;
+		for (auto &pi : m_listeSentiers) // access by reference to avoid copying
+		{
+			if (pi->origin()->connectedToEnter() && !pi->destination()->connectedToEnter()){
+				change = true;
+				pi->destination()->setConnectedToEnter(true);
+			}
+		}
+	}
+	for (auto &pi : m_listePI) // access by reference to avoid copying
+	{
+		if (!pi->connectedToEnter() ){
+			return false;
+		}
+	}
+	return true; 
+}
 
 //2. Chaque entrée de parc doit être le départ d’au moins un sentier.
 bool parc::verifContrainte2(){ 

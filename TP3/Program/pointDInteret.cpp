@@ -4,18 +4,22 @@ pointDInteret::pointDInteret(int id){
 	m_id = id; 
 	m_nbrSentier = 0; 
 	m_couts = map<pointDInteret*, double>(); 
+	m_connectedToEnter = false;
 }
 
 pointDInteret::pointDInteret(int id, int type){
 	m_id = id; m_nbrMaxSentier = 0; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
 	if (type == 1){
 		m_type = pointDeVue;
+		m_connectedToEnter = false;
 	}
 	else if (type == 2){
 		m_type = entree;
+		m_connectedToEnter = true;
 	}
 	else if (type == 3){
 		m_type = etape;
+		m_connectedToEnter = false;
 	}
 };
 
@@ -23,12 +27,15 @@ pointDInteret::pointDInteret(int id, int type, int nbrMaxSentier){
 	m_id = id; m_nbrMaxSentier = nbrMaxSentier; m_nbrSentier = 0; m_couts = map<pointDInteret*, double>();
 	if (type == 1){
 		m_type = pointDeVue;
+		m_connectedToEnter = false;
 	}
 	else if (type == 2){
 		m_type = entree;
+		m_connectedToEnter = true;
 	}
 	else if (type == 3){
 		m_type = etape;
+		m_connectedToEnter = false;
 	}
 };
 
@@ -38,6 +45,15 @@ pointDInteret::pointDInteret(int id, TypesDePointsDinterets type){
 	m_nbrMaxSentier = 0; 
 	m_nbrSentier = 0; 
 	m_couts = map<pointDInteret*, double>(); 
+	if (type == pointDeVue){
+		m_connectedToEnter = false;
+	}
+	else if (type == entree){
+		m_connectedToEnter = true;
+	}
+	else if (type == etape){
+		m_connectedToEnter = false;
+	}
 };
 
 void pointDInteret::incrementeNbrSentier(){ m_nbrSentier++; };
@@ -74,3 +90,9 @@ map<pointDInteret*, double> pointDInteret::getCouts(){
 void pointDInteret::addCout(pointDInteret* pi, double cout){
 	m_couts[pi] = cout;
 };
+
+bool pointDInteret::connectedToEnter(){
+	return m_connectedToEnter;
+}
+
+void pointDInteret::setConnectedToEnter(bool connectedToEnter){ m_connectedToEnter = connectedToEnter; }

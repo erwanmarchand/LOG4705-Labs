@@ -27,6 +27,7 @@ private:
 	int m_nbrMaxSentier;
 	int m_nbrSentier;
 	map<pointDInteret*, double> m_couts;
+	bool m_connectedToEnter;
 
 public:
 	pointDInteret(int id);
@@ -48,4 +49,7 @@ public:
 
 	void addCout(pointDInteret* pi, double cout);
 
+	bool connectedToEnter();
+
+	void setConnectedToEnter(bool connectedToEnter);
 };
